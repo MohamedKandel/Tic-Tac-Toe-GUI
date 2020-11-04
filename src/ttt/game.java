@@ -234,15 +234,18 @@ public class game extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     int counter = 1;
+    boolean enabled = false;
 
     private void start() {
         String x = x_name.getText();
         String o = o_name.getText();
         if (x.equals("") || o.equals("")) {
             tbl.setEnabled(false);
+            enabled = false;
             JOptionPane.showMessageDialog(null, "Write names for 2 players before starting game");
         } else {
             tbl.setEnabled(true);
+            enabled = true;
             jLabel4.setText(x + "'s Score : ");
             jLabel5.setText(o + "'s Score : ");
         }
@@ -402,60 +405,64 @@ public class game extends javax.swing.JFrame {
 
     private void tblMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMouseClicked
         // TODO add your handling code here:
-        int row = tbl.getSelectedRow();
-        int col = tbl.getSelectedColumn();
-        int x = Integer.parseInt(x_score.getText());
-        int o = Integer.parseInt(o_score.getText());
-        //
+        if (enabled) {
+            int row = tbl.getSelectedRow();
+            int col = tbl.getSelectedColumn();
+            int x = Integer.parseInt(x_score.getText());
+            int o = Integer.parseInt(o_score.getText());
+            //
 
-        if (tbl.getModel().getValueAt(row, col).equals("X")) {
-            JOptionPane.showMessageDialog(null, "Cell already taken");
-                     
-            tbl.setValueAt("X", row, col);
-        } else if (tbl.getModel().getValueAt(row, col).equals("O")) {
-            JOptionPane.showMessageDialog(null, "Cell already taken");
-                     
-            tbl.setValueAt("O", row, col);
-        } else {
-            if (counter % 2 != 0) {
-                ++counter;
+            if (tbl.getModel().getValueAt(row, col).equals("X")) {
+                JOptionPane.showMessageDialog(null, "Cell already taken");
+
                 tbl.setValueAt("X", row, col);
-                won(tbl);
-                if (counter == 10) {
-                    turns.setText("it's " + x_name.getText() + " turn's");
-                } else {
-                    turns.setText("it's " + o_name.getText() + " turn's");
-                }
-            } else {
-                ++counter;
-                tbl.setValueAt("O", row, col);
-                //++counter;
-                won(tbl);
-                turns.setText("it's " + x_name.getText() + " turn's");
-            }
-            System.out.println(counter);
-        }
+            } else if (tbl.getModel().getValueAt(row, col).equals("O")) {
+                JOptionPane.showMessageDialog(null, "Cell already taken");
 
-        if (!winner.getText().equals("") && counter == 10 && !won(tbl).equals("")) {
-            String won = winner.getText();
-            if (won.contains(x_name.getText())) {
-                x++;
-                x_score.setText(x + "");
-                clear(tbl);
-                counter = 1;
-            } else if (won.contains(o_name.getText())) {
-                o++;
-                o_score.setText(o + "");
-                clear(tbl);
-                counter = 1;
+                tbl.setValueAt("O", row, col);
             } else {
-                winner.setText("");
+                if (counter % 2 != 0) {
+                    ++counter;
+                    tbl.setValueAt("X", row, col);
+                    won(tbl);
+                    if (counter == 10) {
+                        turns.setText("it's " + x_name.getText() + " turn's");
+                    } else {
+                        turns.setText("it's " + o_name.getText() + " turn's");
+                    }
+                } else {
+                    ++counter;
+                    tbl.setValueAt("O", row, col);
+                    //++counter;
+                    won(tbl);
+                    turns.setText("it's " + x_name.getText() + " turn's");
+                }
+                System.out.println(counter);
             }
-        } else if (counter == 10 && won(tbl).equals("")) {
-            String msg = "Draw\n" + x_name.getText() + "'s score is " + x_score.getText()
-                    + "\n" + o_name.getText() + "'s score is " + o_score.getText();
-            JOptionPane.showMessageDialog(null, msg);
-            clear(tbl);
+
+            if (!winner.getText().equals("") && counter == 10 && !won(tbl).equals("")) {
+                String won = winner.getText();
+                if (won.contains(x_name.getText())) {
+                    x++;
+                    x_score.setText(x + "");
+                    clear(tbl);
+                    counter = 1;
+                } else if (won.contains(o_name.getText())) {
+                    o++;
+                    o_score.setText(o + "");
+                    clear(tbl);
+                    counter = 1;
+                } else {
+                    winner.setText("");
+                }
+            } else if (counter == 10 && won(tbl).equals("")) {
+                String msg = "Draw\n" + x_name.getText() + "'s score is " + x_score.getText()
+                        + "\n" + o_name.getText() + "'s score is " + o_score.getText();
+                JOptionPane.showMessageDialog(null, msg);
+                clear(tbl);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Write names for 2 players before starting game");
         }
     }//GEN-LAST:event_tblMouseClicked
 
@@ -471,6 +478,7 @@ public class game extends javax.swing.JFrame {
         jLabel5.setText("O Score : ");
         counter = 1;
         tbl.setEnabled(false);
+        enabled = false;
         x_name.requestFocus();
     }//GEN-LAST:event_btn_resetActionPerformed
 
@@ -496,6 +504,7 @@ public class game extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         tbl.setEnabled(false);
+        enabled = false;
         tbl.getTableHeader().setReorderingAllowed(false);
         winner.setText("");
     }//GEN-LAST:event_formWindowOpened
